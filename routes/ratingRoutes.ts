@@ -1,102 +1,103 @@
-const express = require('express');
-const router = express.Router();
-const CustomerRating = require('../models/CustomerRating');
+import express, { Request, Response } from "express";
+import CustomerRating from "../models/CustomerRating";
 
-router.post('/', async (req, res) => {
+const router = express.Router();
+
+router.post("/", async (req: Request, res: Response) => {
   try {
     const rating = await CustomerRating.create(req.body);
     res.status(201).json({
       success: true,
-      data: rating
+      data: rating,
     });
-  } catch (error) {
+  } catch (error: any) {
     res.status(400).json({
       success: false,
-      error: error.message
+      error: error.message,
     });
   }
 });
 
-router.get('/', async (req, res) => {
+router.get("/", async (req: Request, res: Response) => {
   try {
     const ratings = await CustomerRating.find().sort({ date: -1 });
     res.status(200).json({
       success: true,
       count: ratings.length,
-      data: ratings
+      data: ratings,
     });
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({
       success: false,
-      error: error.message
+      error: error.message,
     });
   }
 });
 
-router.get('/:id', async (req, res) => {
+router.get("/:id", async (req: Request, res: Response) => {
   try {
     const rating = await CustomerRating.findById(req.params.id);
     if (!rating) {
       return res.status(404).json({
         success: false,
-        error: 'Rating not found'
+        error: "Rating not found",
       });
     }
     res.status(200).json({
       success: true,
-      data: rating
+      data: rating,
     });
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({
       success: false,
-      error: error.message
+      error: error.message,
     });
   }
 });
 
-router.put('/:id', async (req, res) => {
+router.put("/:id", async (req: Request, res: Response) => {
   try {
     const rating = await CustomerRating.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
-      runValidators: true
+      runValidators: true,
     });
     if (!rating) {
       return res.status(404).json({
         success: false,
-        error: 'Rating not found'
+        error: "Rating not found",
       });
     }
     res.status(200).json({
       success: true,
-      data: rating
+      data: rating,
     });
-  } catch (error) {
+  } catch (error: any) {
     res.status(400).json({
       success: false,
-      error: error.message
+      error: error.message,
     });
   }
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete("/:id", async (req: Request, res: Response) => {
   try {
     const rating = await CustomerRating.findByIdAndDelete(req.params.id);
     if (!rating) {
       return res.status(404).json({
         success: false,
-        error: 'Rating not found'
+        error: "Rating not found",
       });
     }
     res.status(200).json({
       success: true,
-      data: {}
+      data: {},
     });
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({
       success: false,
-      error: error.message
+      error: error.message,
     });
   }
 });
 
-module.exports = router;
+export default router;
