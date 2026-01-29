@@ -5,6 +5,7 @@ export interface IProduct extends Document {
   description: string;
   price: number;
   offer: number;
+  category: string;
   boughtQuantity: number;
   imageUrls: string[];
   discountedPrice: number;
@@ -29,6 +30,11 @@ const productSchema = new Schema<IProduct>(
       required: [true, "Please add a price"],
       min: [0, "Price cannot be negative"],
     },
+    category: {
+      type: String,
+      required: [true, "Please add a category"],
+      trim: true,
+    },
     offer: {
       type: Number,
       default: 0,
@@ -50,7 +56,7 @@ const productSchema = new Schema<IProduct>(
     timestamps: true,
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
-  },
+  }
 );
 
 productSchema.virtual("discountedPrice").get(function (this: IProduct) {

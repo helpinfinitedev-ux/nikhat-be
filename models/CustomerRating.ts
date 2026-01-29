@@ -5,6 +5,8 @@ export interface ICustomerRating extends Document {
   rating: number;
   description: string;
   date: Date;
+  links: string[];
+  imageUrls: string[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -31,10 +33,20 @@ const customerRatingSchema = new Schema<ICustomerRating>(
       type: Date,
       default: Date.now,
     },
+    imageUrls: [
+      {
+        type: String,
+      },
+    ],
+    links: [
+      {
+        type: String,
+      },
+    ],
   },
   {
     timestamps: true,
-  },
+  }
 );
 
 export default mongoose.model<ICustomerRating>("CustomerRating", customerRatingSchema);

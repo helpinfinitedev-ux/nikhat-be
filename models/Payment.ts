@@ -30,7 +30,6 @@ const paymentSchema = new Schema<IPayment>(
     },
     mode: {
       type: String,
-      enum: ["card", "upi", "netbanking", "wallet", "cod"],
       required: [true, "Please add payment mode"],
     },
     razorpayId: {
@@ -45,7 +44,7 @@ const paymentSchema = new Schema<IPayment>(
   },
   {
     timestamps: true,
-  },
+  }
 );
 
 export default mongoose.model<IPayment>("Payment", paymentSchema);

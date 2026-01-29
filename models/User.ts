@@ -2,7 +2,7 @@ import mongoose, { Schema, Document } from "mongoose";
 
 export interface IUser extends Document {
   name: string;
-  emailAddress: string;
+  emailAddress?: string;
   phoneNumber: string;
   address: {
     street?: string;
@@ -61,7 +61,7 @@ const userSchema = new Schema<IUser>(
   },
   {
     timestamps: true,
-  },
+  }
 );
 
 export default mongoose.model<IUser>("User", userSchema);
