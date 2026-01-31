@@ -4,6 +4,7 @@ export interface IUser extends Document {
   name: string;
   emailAddress?: string;
   phoneNumber: string;
+  password: string;
   address: {
     street?: string;
     city?: string;
@@ -36,6 +37,11 @@ const userSchema = new Schema<IUser>(
     phoneNumber: {
       type: String,
       required: [true, "Please add a phone number"],
+      trim: true,
+    },
+    password: {
+      type: String,
+      required: [true, "Please add a password"],
       trim: true,
     },
     address: {

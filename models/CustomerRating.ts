@@ -4,6 +4,7 @@ export interface ICustomerRating extends Document {
   customerName: string;
   rating: number;
   description: string;
+  treatment: string;
   date: Date;
   links: string[];
   imageUrls: string[];
@@ -23,6 +24,11 @@ const customerRatingSchema = new Schema<ICustomerRating>(
       required: [true, "Please add a rating"],
       min: [1, "Rating must be at least 1"],
       max: [5, "Rating cannot exceed 5"],
+    },
+    treatment: {
+      type: String,
+      required: [true, "Please add a treatment"],
+      trim: true,
     },
     description: {
       type: String,

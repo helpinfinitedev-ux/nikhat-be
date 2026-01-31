@@ -1,7 +1,73 @@
 import express, { Request, Response } from "express";
 import User from "../models/User";
+import { generateToken } from "../middleware/authenticate";
+import bcrypt from "bcrypt";
 
 const router = express.Router();
+
+export const register = async (req: Request, res: Response) => {
+  try {
+    const { name, mobile, password, role } = req.body;
+
+    const existingUser = await User.findOne({ phoneNumber: mobile });
+    if (existingUser) {
+      return res.status(400).json({ error: "Mobile already registered" });
+    }
+
+    const passwordHash = await bcrypt.hash(password, 10);
+
+    const user = await User.create({
+      name,
+      phoneNumber: mobile,
+      password: passwordHash,
+      role: role || "customer",
+    });
+
+    const token = generateToken(user._id.toString(), user.role, user.phoneNumber);
+    res.json({
+      token,
+      user: {
+        id: user.id,
+        name: user.name,
+        phoneNumber: user.phoneNumber,
+        role: user.role,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Registration failed" });
+  }
+};
+
+export const login = async (req: Request, res: Response) => {
+  try {
+    const { mobile, password } = req.body;
+
+    const user = await User.findOne({ phoneNumber: mobile });
+    if (!user) {
+      return res.status(400).json({ error: "User not found" });
+    }
+
+    const isValid = await bcrypt.compare(password, user.password);
+    if (!isValid) {
+      return res.status(400).json({ error: "Invalid password" });
+    }
+
+    // OTP step (admin only by default)
+
+    const token = generateToken(user._id.toString(), user.role, user.phoneNumber);
+    res.json({
+      token,
+      user,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error, message: "Login failed" });
+  }
+};
+
+// Auth routes
+router.post("/login", login);
+router.post("/register", register);
 
 router.post("/", async (req: Request, res: Response) => {
   try {
