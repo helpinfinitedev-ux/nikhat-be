@@ -1,33 +1,49 @@
 // src/config/db.js
 import { config as loadEnv } from "dotenv";
-import { fileURLToPath } from "url";
-import path from "path";
 import mongoose from "mongoose";
 
-// Load .env from backend root: backend/.env  (db.js is at backend/src/config/db.js)
 loadEnv();
 
 const URI = process.env.MONGO_URI || process.env.MONGODB_URI || process.env.DATABASE_URL;
 
-console.log(URI);
+// Cache the connection for serverless environments
+let cached = (global as any).mongoose || { conn: null, promise: null };
+(global as any).mongoose = cached;
 
 export async function connectDB() {
   if (!URI) {
     console.error("MONGO_URI missing in .env (checked MONGO_URI, MONGODB_URI, DATABASE_URL)");
-    process.exit(1);
+    throw new Error("MongoDB URI not configured");
   }
 
-  // Prevent duplicate connects: 0=disconnected, 1=connected, 2=connecting, 3=disconnecting
-  const state = mongoose.connection.readyState;
-  if (state === 1 || state === 2) return;
+  // Return cached connection if available
+  if (cached.conn) {
+    return cached.conn;
+  }
+
+  // If already connecting, wait for the existing promise
+  if (!cached.promise) {
+    const opts = {
+      bufferCommands: false, // Disable buffering for serverless
+      serverSelectionTimeoutMS: 10000,
+      socketTimeoutMS: 45000,
+    };
+
+    cached.promise = mongoose.connect(URI, opts).then((mongoose) => {
+      console.log("Mongo connected:", mongoose.connection.name);
+      return mongoose;
+    });
+  }
 
   try {
-    await mongoose.connect(URI, { serverSelectionTimeoutMS: 8000 });
-    console.log(" Mongo connected:", mongoose.connection.name || mongoose.connection.db?.databaseName);
+    cached.conn = await cached.promise;
   } catch (err: any) {
-    console.error(" Mongo connect error:", err?.message || err);
-    process.exit(1);
+    cached.promise = null;
+    console.error("Mongo connect error:", err?.message || err);
+    throw err;
   }
+
+  return cached.conn;
 }
 
 export default connectDB;
