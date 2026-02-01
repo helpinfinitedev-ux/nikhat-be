@@ -28,7 +28,7 @@ const userSchema = new Schema<IUser>(
     },
     emailAddress: {
       type: String,
-      required: [true, "Please add an email"],
+      required: [false, "Please add an email"],
       unique: true,
       lowercase: true,
       trim: true,

@@ -12,6 +12,7 @@ import uploadRoutes from "./routes/uploadRoutes";
 import { createAdminUser } from "./utils/createAdminUser";
 import orderRoutes from "./routes/orderRoutes";
 import blogRoutes from "./routes/blogRoutes";
+import cartRoutes from "./routes/cartRoutes";
 
 const app = express();
 
@@ -48,6 +49,7 @@ app.use("/api/payments", paymentRoutes);
 app.use("/api/upload", uploadRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/blogs", blogRoutes);
+app.use("/api/cart", cartRoutes);
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   console.error(err.stack);
   res.status(err.status || 500).json({

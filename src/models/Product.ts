@@ -22,7 +22,7 @@ const productSchema = new Schema<IProduct>(
     },
     description: {
       type: String,
-      required: [true, "Please add a description"],
+      required: [false, "Description is optional"],
       trim: true,
     },
     price: {

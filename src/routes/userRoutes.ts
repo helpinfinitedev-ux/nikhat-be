@@ -1,13 +1,13 @@
 import express, { Request, Response } from "express";
 import User from "../models/User";
-import { generateToken } from "../middleware/authenticate";
+import { authenticate, generateToken } from "../middleware/authenticate";
 import bcrypt from "bcrypt";
 
 const router = express.Router();
 
 export const register = async (req: Request, res: Response) => {
   try {
-    const { name, mobile, password, role } = req.body;
+    const { name, mobile, password, role, emailAddress } = req.body;
 
     const existingUser = await User.findOne({ phoneNumber: mobile });
     if (existingUser) {
@@ -19,6 +19,7 @@ export const register = async (req: Request, res: Response) => {
     const user = await User.create({
       name,
       phoneNumber: mobile,
+      emailAddress,
       password: passwordHash,
       role: role || "customer",
     });
@@ -34,6 +35,7 @@ export const register = async (req: Request, res: Response) => {
       },
     });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: "Registration failed" });
   }
 };
@@ -68,6 +70,27 @@ export const login = async (req: Request, res: Response) => {
 // Auth routes
 router.post("/login", login);
 router.post("/register", register);
+
+router.get("/me", authenticate, async (req: Request, res: Response) => {
+  try {
+    const user = await User.findById((req as any).user?.userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        error: "User not found",
+      });
+    }
+    res.status(200).json({
+      success: true,
+      data: user?.toObject(),
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+});
 
 router.post("/", async (req: Request, res: Response) => {
   try {
