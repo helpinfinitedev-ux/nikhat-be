@@ -26,8 +26,6 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/uploads", express.static("uploads"));
-
 app.get("/", (req: Request, res: Response) => {
   res.json({
     message: "Welcome to E-Commerce API",
