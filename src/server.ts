@@ -8,7 +8,7 @@ import userRoutes from "./routes/userRoutes";
 import productRoutes from "./routes/productRoutes";
 import ratingRoutes from "./routes/ratingRoutes";
 import paymentRoutes from "./routes/paymentRoutes";
-import uploadRoutes from "./routes/uploadRoutes";
+// import uploadRoutes from "./routes/uploadRoutes";
 import { createAdminUser } from "./utils/createAdminUser";
 import orderRoutes from "./routes/orderRoutes";
 import blogRoutes from "./routes/blogRoutes";
@@ -35,7 +35,10 @@ app.get("/", (req: Request, res: Response) => {
       products: "/api/products",
       ratings: "/api/ratings",
       payments: "/api/payments",
-      upload: "/api/upload",
+      cart: "/api/cart",
+      orders: "/api/orders",
+      blogs: "/api/blogs",
+      // upload: "/api/upload",
     },
   });
 });
@@ -44,7 +47,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/ratings", ratingRoutes);
 app.use("/api/payments", paymentRoutes);
-app.use("/api/upload", uploadRoutes);
+// app.use("/api/upload", uploadRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/blogs", blogRoutes);
 app.use("/api/cart", cartRoutes);

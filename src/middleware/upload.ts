@@ -3,7 +3,7 @@ import path from "path";
 import fs from "fs";
 import { Request } from "express";
 
-const uploadDir = "./uploads";
+const uploadDir = "../uploads";
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
