@@ -4,7 +4,10 @@ export interface IOrder extends Document {
   userId: mongoose.Types.ObjectId;
   status: string;
   paymentStatus: string;
+  address: Object;
+  phoneNumber: number;
   amount: number;
+  products: Object[];
   paymentDate: Date;
   createdAt: Date;
   updatedAt: Date;
@@ -21,9 +24,21 @@ export const orderSchema = new Schema<IOrder>(
       type: String,
       required: [true, "Please add status"],
     },
+    address: {
+      type: Object,
+      required: [true, "Please add address"],
+    },
+    phoneNumber: {
+      type: Number,
+      required: [true, "Please add phone number"],
+    },
     paymentStatus: {
       type: String,
       required: [true, "Please add payment status"],
+    },
+    products: {
+      type: [Object],
+      required: [true, "Please add products"],
     },
     amount: {
       type: Number,
@@ -31,7 +46,7 @@ export const orderSchema = new Schema<IOrder>(
     },
     paymentDate: {
       type: Date,
-      required: [true, "Please add payment date"],
+      required: [false, "Please add payment date"],
     },
   },
   {

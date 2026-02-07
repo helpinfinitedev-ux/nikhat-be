@@ -66,4 +66,25 @@ router.patch("/:id", async (req, res) => {
         });
     }
 });
+router.delete("/:id", async (req, res) => {
+    try {
+        const blog = await Blog_1.default.findByIdAndDelete(req.params.id);
+        if (!blog) {
+            return res.status(404).json({
+                success: false,
+                error: "Blog not found",
+            });
+        }
+        res.status(200).json({
+            success: true,
+            data: {},
+        });
+    }
+    catch (error) {
+        res.status(400).json({
+            success: false,
+            error: error.message,
+        });
+    }
+});
 exports.default = router;

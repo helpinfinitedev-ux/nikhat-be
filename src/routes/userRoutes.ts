@@ -11,6 +11,7 @@ export const register = async (req: Request, res: Response) => {
 
     const existingUser = await User.findOne({ phoneNumber: mobile });
     if (existingUser) {
+      console.log("Mobile already registered");
       return res.status(400).json({ error: "Mobile already registered" });
     }
 

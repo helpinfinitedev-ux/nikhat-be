@@ -61,4 +61,25 @@ router.patch("/:id", async (req: Request, res: Response) => {
   }
 });
 
+router.delete("/:id", async (req: Request, res: Response) => {
+  try {
+    const blog = await Blog.findByIdAndDelete(req.params.id);
+    if (!blog) {
+      return res.status(404).json({
+        success: false,
+        error: "Blog not found",
+      });
+    }
+    res.status(200).json({
+      success: true,
+      data: {},
+    });
+  } catch (error: any) {
+    res.status(400).json({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+
 export default router;
